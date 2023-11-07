@@ -1,3 +1,9 @@
+<script setup>
+import dough from "../mocks/dough.json";
+import ingredients from "../mocks/ingredients.json";
+import sizes from "../mocks/sizes.json";
+</script>
+
 <template>
   <main class="content">
     <form action="#" method="post">
@@ -140,9 +146,3 @@
     </form>
   </main>
 </template>
-
-<script setup>
-import dough from "../mocks/dough.json";
-import ingredients from "../mocks/ingredients.json";
-import sizes from "../mocks/sizes.json";
-</script>

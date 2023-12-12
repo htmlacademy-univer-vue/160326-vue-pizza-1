@@ -1,3 +1,22 @@
+<script setup>
+import {
+  normalizeDough,
+  normalizeIngredients,
+  normalizeSizes,
+  normalizeSauces,
+} from "../common/helpers";
+
+import doughJSON from "../mocks/dough.json";
+import ingredientsJSON from "../mocks/ingredients.json";
+import sizesJSON from "../mocks/sizes.json";
+import saucesJSON from "../mocks/sauces.json";
+
+const doughTypes = doughJSON.map(normalizeDough);
+const ingredientsTypes = ingredientsJSON.map(normalizeIngredients);
+const saucesTypes = saucesJSON.map(normalizeSauces);
+const sizesTypes = sizesJSON.map(normalizeSizes);
+</script>
+
 <template>
   <main class="content">
     <form action="#" method="post">
@@ -10,19 +29,21 @@
 
             <div class="sheet__content dough">
               <label
+                v-for="doughType in doughTypes"
                 class="dough__input dough__input--light"
-                v-for="item in dough"
-                :key="item.id"
+                :class="`dough__input--${doughType.value}`"
+                :key="doughType.id"
               >
                 <input
                   type="radio"
                   name="dought"
-                  :value="item.type"
+                  :value="doughType.value"
                   class="visually-hidden"
                   checked
                 />
-                <b>{{ item.name }}</b>
-                <span>{{ item.description }}</span>
+
+                <b>{{ doughType.name }}</b>
+                <span>{{ doughType.description }}</span>
               </label>
             </div>
           </div>
@@ -35,16 +56,17 @@
             <div class="sheet__content diameter">
               <label
                 class="diameter__input"
-                v-for="size in sizes"
-                :key="size.id"
+                :class="`diameter__input--${sizeType.value}`"
+                v-for="sizeType in sizesTypes"
+                :key="sizeType.id"
               >
                 <input
                   type="radio"
                   name="diameter"
-                  value="small"
+                  :value="sizeType.value"
                   class="visually-hidden"
                 />
-                <span>{{ size.name }}</span>
+                <span>{{ sizeType.name }}</span>
               </label>
             </div>
           </div>
@@ -60,13 +82,17 @@
               <div class="ingredients__sauce">
                 <p>Основной соус:</p>
 
-                <label class="radio ingredients__input">
-                  <input type="radio" name="sauce" value="tomato" checked />
-                  <span>Томатный</span>
-                </label>
-                <label class="radio ingredients__input">
-                  <input type="radio" name="sauce" value="creamy" />
-                  <span>Сливочный</span>
+                <label
+                  class="radio ingredients__input"
+                  v-for="sauceType in saucesTypes"
+                >
+                  <input
+                    type="radio"
+                    name="sauce"
+                    :value="sauceType.value"
+                    checked
+                  />
+                  <span>{{ sauceType.name }}</span>
                 </label>
               </div>
 
@@ -76,12 +102,15 @@
                 <ul class="ingredients__list">
                   <li
                     class="ingredients__item"
-                    v-for="ingredient in ingredients"
-                    :key="ingredient.id"
+                    v-for="ingredientType in ingredientsTypes"
+                    :key="ingredientType.id"
                   >
-                    <span class="filling filling--ananas">{{
-                      ingredient.name
-                    }}</span>
+                    <span
+                      class="filling"
+                      :class="`filling--${ingredientType.value}`"
+                    >
+                      {{ ingredientType.name }}
+                    </span>
 
                     <div class="counter counter--orange ingredients__counter">
                       <button
@@ -140,9 +169,3 @@
     </form>
   </main>
 </template>
-
-<script setup>
-import dough from "../mocks/dough.json";
-import ingredients from "../mocks/ingredients.json";
-import sizes from "../mocks/sizes.json";
-</script>

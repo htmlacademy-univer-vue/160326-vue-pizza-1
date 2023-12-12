@@ -4,15 +4,13 @@
     "name": "Тонкое",
     "image": "dough-light.svg",
     "description": "Из твердых сортов пшеницы",
-    "price": 300,
-    "type": "light"
+    "price": 300
   },
   {
     "id": 2,
     "name": "Толстое",
     "image": "dough-large.svg",
     "description": "Из твердых сортов пшеницы",
-    "price": 300,
-    "type": "large"
+    "price": 300
   }
 ]

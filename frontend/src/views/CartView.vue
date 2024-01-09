@@ -47,7 +47,11 @@
             ></app-counter>
 
             <div class="cart-list__price">
-                <b><span v-if="cart_pizza.count>1">{{cart_pizza.count}} X </span>{{ cart_pizza.pricePizza }} ₽</b>
+              <b
+                ><span v-if="cart_pizza.count > 1"
+                  >{{ cart_pizza.count }} X </span
+                >{{ cart_pizza.pricePizza }} ₽</b
+              >
             </div>
 
             <div class="cart-list__button">
@@ -101,7 +105,7 @@
             <label class="cart-form__select">
               <span class="cart-form__label">Получение заказа:</span>
 
-              <select v-model="selectedAddressId" name="test" class="select">
+              <select v-model="selectedAddressId" name="test" class="select select--address">
                 <option value="-1">Заберу сам</option>
                 <option value="-2">Новый адрес</option>
                 <option
@@ -288,16 +292,29 @@ function makeOrder() {
     const newOrder = {
       userId: authStore.user.id,
       phone: orderPhone.value,
-      misc: cart.miscs.filter((item)=>item.count>0).map(item => ({ miscId: item.id, quantity: item.count })),
-      pizzas: cart.pizzas.map(item => ({ ingredients: Object.entries(item.ingredients).map(([name, { id, count }]) => ({ ingredientId: id, quantity: count })), quantity: item.count, name: item.name, sauceId: item.sauce.id, sizeId: item.size.id, doughId: item.dough.id })),
+      misc: cart.miscs
+        .filter((item) => item.count > 0)
+        .map((item) => ({ miscId: item.id, quantity: item.count })),
+      pizzas: cart.pizzas.map((item) => ({
+        ingredients: Object.entries(item.ingredients).map(
+          ([, { id, count }]) => ({
+            ingredientId: id,
+            quantity: count,
+          })
+        ),
+        quantity: item.count,
+        name: item.name,
+        sauceId: item.sauce.id,
+        sizeId: item.size.id,
+        doughId: item.dough.id,
+      })),
       address: {
-          building: " ",
-          flat: " ",
-          street: " ",
-          comment: " ",
-      }
+        building: " ",
+        flat: " ",
+        street: " ",
+        comment: " ",
+      },
     };
-    console.log(newOrder)
     if (selectedAddressId.value >= 0) {
       newOrder["address"] = profile.addresses.find(
         (address) => address.id === selectedAddressId.value
@@ -334,4 +351,7 @@ function changePizza(pizza_change) {
 @import "@/assets/scss/blocks/additional-list.scss";
 @import "@/assets/scss/blocks/footer.scss";
 @import "@/assets/scss/blocks/select.scss";
+.select--address{
+  width: 150px;
+}
 </style>

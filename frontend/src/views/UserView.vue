@@ -8,13 +8,13 @@
       <source
         type="image/webp"
         srcset="
-          @/assets/img/users/user5@2x.webp 1x,
-          @/assets/img/users/user5@4x.webp 2x
+          http://127.0.0.1:3000/public/img/users/user@2x.webp 1x,
+          http://127.0.0.1:3000/public/img/users/user@4x.webp 2x
         "
       />
       <img
-        src="http://127.0.0.1:3000/public/img/users/user5@2x.jpg"
-        srcset="http://127.0.0.1:3000/public/img/users/user5@4x.jpg"
+        src="http://127.0.0.1:3000/public/img/users/user@2x.jpg"
+        srcset="http://127.0.0.1:3000/public/img/users/user@4x.jpg"
         :alt="user.name"
         width="72"
         height="72"
@@ -27,10 +27,11 @@
       Контактный телефон: <span>{{ user.phone }}</span>
     </p>
   </div>
+    <transition-group name="fade" @before-leave="beforeLeave">
   <div
     v-for="(address, index) in user.addresses"
     :key="index"
-    class="layout__address"
+    class="layout__address animate__animated animate__fadeIn"
   >
     <address-form
       v-if="selectedAddress !== null && selectedAddress.id === address.id"
@@ -56,7 +57,7 @@
       <small>{{ address.comment }}</small>
     </div>
   </div>
-
+    </transition-group>
   <div v-if="addForm" class="layout__address">
     <address-form
       v-if="addForm"
@@ -76,11 +77,9 @@
 <script setup>
 import { useProfileStore } from "@/stores/profile";
 import { ref } from "vue";
-import { useDataStore } from "@/stores/data";
 import AddressForm from "@/modules/forms/AddressForm.vue";
 
 const user = useProfileStore();
-const data = useDataStore();
 const addForm = ref(false);
 const selectedAddress = ref(null);
 const newAddress = ref({
@@ -119,6 +118,11 @@ const saveForm = () => {
     resetForm();
   }
 };
+
+const beforeLeave = (el) =>{
+  el.classList.add('animate__fadeOut');
+  el.classList.remove('animate__fadeIn');
+}
 
 const deleteAddress = () => {
   user.deleteAddress(selectedAddress.value);

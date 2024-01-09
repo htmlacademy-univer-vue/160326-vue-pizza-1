@@ -17,7 +17,7 @@ watch(
   async (meta) => {
     try {
       if (meta.layout) {
-        const component = await import(`./${meta.layout}.vue`);
+        const component = await import(/* @vite-ignore */`./${meta.layout}.vue`);
         layout.value = component?.default || DefaultLayout;
       } else {
         layout.value = DefaultLayout;

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import resources from "@/services/resources";
-import {usePizzaStore} from "@/stores/pizza";
-import {useDataStore} from "@/stores/data";
+import { usePizzaStore } from "@/stores/pizza";
+import { useDataStore } from "@/stores/data";
 
 export const useProfileStore = defineStore("profile", {
   state: () => ({
@@ -14,30 +14,37 @@ export const useProfileStore = defineStore("profile", {
     addresses: [],
   }),
   getters: {
-    getOrderAdress:(state)=>(order)=>{
-      return state.addresses.find((item)=>item.id===order.addressId)
-},
-    getOrderPrice:(state) => (order)=>{
-      const pizzaStore = usePizzaStore()
-      const dataStore = useDataStore()
-      const pizzasPrice = order.orderPizzas !== undefined ? order.orderPizzas.reduce(
-        (sum, pizza) => sum + pizzaStore.pricePizzaSome(pizza) * pizza.quantity,
-        0
-      ):0;
-      const miscPrice = order.orderMisc !== undefined ? order.orderMisc.reduce((sum, misc) => {
-        if (misc !== undefined) {
-
-          const dataMisc = dataStore.misc.find(
-            (data_misc) => data_misc !== undefined && data_misc.id === misc.miscId
-          );
-          if (dataMisc) {
-            return sum + dataMisc.price * misc.quantity;
-          }
-        }
-        return sum;
-      }, 0) : 0;
-      return pizzasPrice + miscPrice
-},
+    getOrderAdress: (state) => (order) => {
+      return state.addresses.find((item) => item.id === order.addressId);
+    },
+    getOrderPrice: () => (order) => {
+      const pizzaStore = usePizzaStore();
+      const dataStore = useDataStore();
+      const pizzasPrice =
+        order.orderPizzas !== undefined
+          ? order.orderPizzas.reduce(
+              (sum, pizza) =>
+                sum + pizzaStore.pricePizzaSome(pizza) * pizza.quantity,
+              0
+            )
+          : 0;
+      const miscPrice =
+        order.orderMisc !== undefined
+          ? order.orderMisc.reduce((sum, misc) => {
+              if (misc !== undefined) {
+                const dataMisc = dataStore.misc.find(
+                  (data_misc) =>
+                    data_misc !== undefined && data_misc.id === misc.miscId
+                );
+                if (dataMisc) {
+                  return sum + dataMisc.price * misc.quantity;
+                }
+              }
+              return sum;
+            }, 0)
+          : 0;
+      return pizzasPrice + miscPrice;
+    },
   },
   actions: {
     async deleteOrder(id) {
@@ -46,15 +53,12 @@ export const useProfileStore = defineStore("profile", {
     },
     async makeOrder(order) {
       await resources.order.createOrder(order);
-      console.log(order)
       await this.getOrders();
       await this.setAddresses();
     },
     async getOrders() {
       const data = await resources.order.getOrders();
-      this.orders = data.data.filter(
-        (order) => order.userId === this.id
-      );
+      this.orders = data.data.filter((order) => order.userId === this.id);
     },
     setOrders(orders) {
       this.orders = orders;

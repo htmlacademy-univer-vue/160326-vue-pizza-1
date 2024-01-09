@@ -1,11 +1,11 @@
 .layout__sidebar {
-  position: fixed;
+  position: absolute;
   z-index: 2;
-  top: 0;
+  //top: 0;
   left: 0;
 
   width: 180px;
-  height: 100%;
+  height: 100vh;
 
   background-color: rgba($green-500, 0.05);
 }

@@ -2,8 +2,10 @@ import { useDataStore } from "@/stores/data";
 
 export const pizzaPrice = (pizza) => {
   const data = useDataStore();
-  const ingredientsPrice = Object.values(pizza.ingredients)
-    .reduce((total, ingredient) => total + ingredient.price * ingredient.count, 0);
+  const ingredientsPrice = Object.values(pizza.ingredients).reduce(
+    (total, ingredient) => total + ingredient.price * ingredient.count,
+    0
+  );
 
   const sizeMultiplier =
     data.sizes.find((item) => item === pizza.size)?.multiplier ?? 1;

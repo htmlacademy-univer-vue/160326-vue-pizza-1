@@ -1,9 +1,8 @@
 <template>
-    <app-header/>
-    <slot/>
+  <app-header />
+  <slot />
 </template>
 
 <script setup>
-    import AppHeader from "./AppHeader.vue";
-    import {AppLayout} from "@/layouts/index";
+import AppHeader from "./AppHeader.vue";
 </script>

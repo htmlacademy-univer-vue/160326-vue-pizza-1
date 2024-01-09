@@ -67,7 +67,7 @@
               :disabled="pizza.name.length === 0"
               @click="addToCart"
             >
-              {{ pizza.id!==null ? "Изменить" : "Готовьте!" }}
+              {{ pizza.id !== null ? "Изменить" : "Готовьте!" }}
             </button>
           </div>
         </div>
@@ -86,7 +86,7 @@ import { usePizzaStore } from "@/stores/pizza";
 import { useDataStore } from "@/stores/data";
 import { useCartStore } from "@/stores/cart";
 import router from "@/router";
-import {onUnmounted} from "vue";
+import { onUnmounted } from "vue";
 
 const pizza = usePizzaStore();
 const cart = useCartStore();

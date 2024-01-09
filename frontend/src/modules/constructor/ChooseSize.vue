@@ -1,7 +1,7 @@
 <template>
   <label
     v-for="(size, index) in items"
-    :key="size.id"
+    :key="index"
     class="diameter__input"
     :class="`diameter__input--${size.latinName}`"
   >

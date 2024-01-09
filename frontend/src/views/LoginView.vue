@@ -27,7 +27,7 @@
       />
 
       <button type="submit" class="button">Авторизоваться</button>
-      <div v-if="serverErrorMessage" class="error">
+      <div class="error">
         {{ serverErrorMessage }}
       </div>
     </form>

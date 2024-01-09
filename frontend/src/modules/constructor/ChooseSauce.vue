@@ -1,7 +1,7 @@
 <template>
   <label
     v-for="(sauce, index) in items"
-    :key="sauce.id"
+    :key="index"
     class="radio ingredients__input"
   >
     <input

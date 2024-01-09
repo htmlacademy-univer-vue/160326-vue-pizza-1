@@ -1,7 +1,7 @@
 <template>
   <li
     v-for="(ingredient, index) in items"
-    :key="ingredient.id"
+    :key="index"
     class="ingredients__item"
   >
     <app-drag

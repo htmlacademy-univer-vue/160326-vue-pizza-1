@@ -1,9 +1,4 @@
 import { defineStore } from "pinia";
-import daughJson from "@/mocks/dough.json";
-import ingredientsJson from "@/mocks/ingredients.json";
-import saucesJson from "@/mocks/sauces.json";
-import sizesJson from "@/mocks/sizes.json";
-import miscJson from "@/mocks/misc.json";
 
 import {
   doughNormalize,
@@ -12,6 +7,7 @@ import {
   sauceNormalize,
 } from "@/common/helpers";
 import resources from "@/services/resources";
+import {usePizzaStore} from "@/stores/pizza";
 
 export const useDataStore = defineStore("data", {
   state: () => ({
@@ -27,8 +23,10 @@ export const useDataStore = defineStore("data", {
       try {
         const doughs = await resources.dough.getDough();
         this.doughs = doughs.data.map(doughNormalize);
+        const pizza = usePizzaStore();
+        pizza.dough = this.doughs[0];
       } catch (error) {
-        this.doughs = []
+        this.doughs = [];
         console.error("Error fetching doughs:", error);
       }
     },
@@ -36,8 +34,10 @@ export const useDataStore = defineStore("data", {
       try {
         const sizes = await resources.size.getSize();
         this.sizes = sizes.data.map(sizeNormalize);
+        const pizza = usePizzaStore();
+        pizza.size = this.sizes[0];
       } catch (error) {
-        this.sizes = []
+        this.sizes = [];
         console.error("Error fetching sizes:", error);
       }
     },
@@ -45,26 +45,28 @@ export const useDataStore = defineStore("data", {
       try {
         const sauces = await resources.sauce.getSauce();
         this.sauces = sauces.data.map(sauceNormalize);
+        const pizza = usePizzaStore();
+        pizza.sauce = this.sauces[0];
       } catch (error) {
-        this.sauces = []
+        this.sauces = [];
         console.error("Error fetching sauces:", error);
       }
     },
     async fetchMiscs() {
       try {
         const miscs = await resources.misc.getMisc();
-        this.misc = miscs.data
+        this.misc = miscs.data;
       } catch (error) {
-        this.misc = []
+        this.misc = [];
         console.error("Error fetching miscs:", error);
       }
     },
     async fetchIngredients() {
       try {
         const ingredients = await resources.ingredients.getIngredients();
-        this.ingredients = ingredients.data.map(ingredientNormalize)
+        this.ingredients = ingredients.data.map(ingredientNormalize);
       } catch (error) {
-        this.ingredients = []
+        this.ingredients = [];
         console.error("Error fetching ingredients:", error);
       }
     },

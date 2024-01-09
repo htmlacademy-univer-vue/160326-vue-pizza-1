@@ -7,10 +7,11 @@
         :class="`pizza--foundation--${modelValue.dough.latinName}-${modelValue.sauce.latinName}`"
       >
         <div class="pizza__wrapper">
+          <transition-group name="fade" @before-leave="beforeLeave">
           <div
             v-for="(ingredient, index) in filteredIngredients"
             :key="index"
-            class="pizza__filling"
+            class="pizza__filling animate__animated animate__zoomIn"
             :class="[
               `pizza__filling--${ingredient.latinName}`,
               ingredient.count === 2
@@ -20,6 +21,7 @@
                 : '',
             ]"
           ></div>
+            </transition-group>
         </div>
       </div>
     </div>
@@ -43,6 +45,12 @@ const filteredIngredients = computed(() => {
     (ingredient) => ingredient.count > 0
   );
 });
+
+
+const beforeLeave = (el) =>{
+  el.classList.add('animate__zoomOut');
+  el.classList.remove('animate__zoomIn');
+}
 </script>
 
 <style lang="scss" scoped>

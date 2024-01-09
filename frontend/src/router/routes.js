@@ -28,6 +28,7 @@ export default [
   {
     path: "/profile",
     name: "ProfileView",
+    redirect: { name: "OrdersView" },
     component: () => import("../views/ProfileView.vue"),
     meta: { layout: "DefaultLayout", middlewares: [isLoggedIn] },
     children: [

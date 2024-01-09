@@ -9,7 +9,7 @@
         <label class="input">
           <span>Название адреса{{ props.type === 1 ? "" : "*" }}</span>
           <input
-            v-model="props.modelValue.name"
+            v-model="model.name"
             type="text"
             name="addr-name"
             placeholder="Введите название адреса"
@@ -21,7 +21,7 @@
         <label class="input">
           <span>Улица{{ props.type === 1 ? "" : "*" }}</span>
           <input
-            v-model="props.modelValue.street"
+            v-model="model.street"
             type="text"
             name="addr-street"
             placeholder="Введите название улицы"
@@ -33,7 +33,7 @@
         <label class="input">
           <span>Дом{{ props.type === 1 ? "" : "*" }}</span>
           <input
-            v-model="props.modelValue.building"
+            v-model="model.building"
             type="text"
             name="addr-house"
             placeholder="Введите номер дома"
@@ -45,7 +45,7 @@
         <label class="input">
           <span>Квартира</span>
           <input
-            v-model="props.modelValue.flat"
+            v-model="model.flat"
             type="text"
             name="addr-apartment"
             placeholder="Введите № квартиры"
@@ -56,7 +56,7 @@
         <label class="input">
           <span>Комментарий</span>
           <input
-            v-model="props.modelValue.comment"
+            v-model="model.comment"
             type="text"
             name="addr-comment"
             placeholder="Введите комментарий"
@@ -88,6 +88,8 @@
   </form>
 </template>
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -100,6 +102,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const model = ref(props.modelValue);
 
 const emit = defineEmits(["deleteForm", "cancelForm", "submitForm"]);
 const deleteAddress = () => {

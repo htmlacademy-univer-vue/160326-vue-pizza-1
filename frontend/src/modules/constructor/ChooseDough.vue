@@ -1,7 +1,7 @@
 <template>
   <label
     v-for="(dough, index) in items"
-    :key="dough.id"
+    :key="index"
     class="dough__input"
     :class="`dough__input--${dough.latinName}`"
   >

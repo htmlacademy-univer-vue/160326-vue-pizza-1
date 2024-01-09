@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useDataStore } from "@/stores/data";
+import {usePizzaStore} from "@/stores/pizza";
 
 export const useCartStore = defineStore("cart", {
   state: () => ({
@@ -78,9 +79,40 @@ export const useCartStore = defineStore("cart", {
       this.pizzas[pizza.id] = pizza;
     },
     copyCart(order) {
-      order.pizzas.forEach((pizza) => this.addPizza({ ...pizza }));
-      order.miscs.forEach((misc) => (this.miscs[misc.id] = { ...misc }));
-    },
+      const data = useDataStore()
+      order.orderPizzas.forEach((pizza) => {
+        const new_pizza = new usePizzaStore()
+        new_pizza.id = this.pizzas.length
+        new_pizza.count = pizza.quantity
+        new_pizza.name = pizza.name
+        new_pizza.dough = data.doughs.find((item)=>item.id === pizza.doughId)
+        new_pizza.size = data.sizes.find((item)=>item.id === pizza.sizeId)
+        new_pizza.sauce = data.sauces.find((item)=>item.id === pizza.sauceId)
+        new_pizza.ingredients = pizza.ingredients.reduce((acc, ingredient) => {
+  const foundIngredient = data.ingredients.find(item => item.id === ingredient.ingredientId);
+
+  if (foundIngredient) {
+    const latinName = foundIngredient.latinName;
+
+    if (!acc[latinName]) {
+      acc[latinName] = { ...foundIngredient, count: 0 };
+    }
+
+    acc[latinName].count += ingredient.quantity;
+  }
+
+  return acc;
+}, {});
+        this.addPizza({ ...new_pizza });
+      });
+order.orderMisc && order.orderMisc.forEach((misc) => {
+  if (misc && misc.miscId !== undefined && misc.quantity !== undefined) {
+    this.miscs[misc.miscId] = {
+      ...data.misc.find((item) => item.id === misc.miscId),
+      count: misc.quantity
+    };
+  }
+});    },
     reset() {
       this.phone = "";
       this.address = {

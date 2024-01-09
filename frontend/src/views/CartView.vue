@@ -1,5 +1,5 @@
 <template>
-  <form method="post" class="layout-form">
+  <form class="layout-form" @submit.prevent="makeOrder">
     <main class="content cart">
       <div class="container">
         <div class="cart__title">
@@ -18,7 +18,7 @@
           >
             <div class="product cart-list__product">
               <img
-                src="@/assets/img/product.svg"
+                src="http://127.0.0.1:3000/public/img/product.svg"
                 class="product__img"
                 width="56"
                 height="56"
@@ -47,7 +47,7 @@
             ></app-counter>
 
             <div class="cart-list__price">
-              <b>{{ cart_pizza.pricePizza }} ₽</b>
+                <b><span v-if="cart_pizza.count>1">{{cart_pizza.count}} X </span>{{ cart_pizza.pricePizza }} ₽</b>
             </div>
 
             <div class="cart-list__button">
@@ -61,7 +61,6 @@
             </div>
           </li>
         </ul>
-
         <div class="cart__additional">
           <ul class="additional-list">
             <li
@@ -71,7 +70,7 @@
             >
               <p class="additional-list__description">
                 <img
-                  :src="`/src/assets/img/${item.image}.svg`"
+                  :src="`http://127.0.0.1:3000${item.image}`"
                   width="39"
                   height="60"
                   :alt="item.name"
@@ -106,7 +105,7 @@
                 <option value="-1">Заберу сам</option>
                 <option value="-2">Новый адрес</option>
                 <option
-                  v-for="(address, index) in profile.getAddresses"
+                  v-for="(address, index) in profile.addresses"
                   :key="index"
                   :value="address.id"
                 >
@@ -225,15 +224,27 @@
         <b>Итого: {{ cart.getFullPrice }} ₽</b>
       </div>
 
-      <div class="footer__submit">
+      <div v-if="authStore.user !== null" class="footer__submit">
         <button
           :disabled="cart.getFullPrice === 0"
           type="submit"
           class="button"
-          @click="makeOrder"
         >
           Оформить заказ
         </button>
+      </div>
+      <div v-else class="footer__login">
+        <div class="footer__more">
+          <router-link
+            class="button"
+            :to="{ name: 'LoginView', query: { redirect: '/cart' } }"
+          >
+            Авторизируйтесь
+          </router-link>
+        </div>
+        <p class="footer__text">
+          Совершить заказ могут только<br />авторизированные пользователи
+        </p>
       </div>
     </section>
   </form>
@@ -247,11 +258,13 @@ import { useProfileStore } from "@/stores/profile";
 import { ref, watch } from "vue";
 import router from "@/router";
 import { usePizzaStore } from "@/stores/pizza";
+import { useAuthStore } from "@/stores/auth";
 
 const cart = useCartStore();
 const data = useDataStore();
 const profile = useProfileStore();
 const pizza = usePizzaStore();
+const authStore = useAuthStore();
 
 const selectedAddressId = ref("-1");
 const selectedAddress = ref(null);
@@ -260,7 +273,7 @@ const orderPhone = ref(profile.phone);
 
 watch(selectedAddressId, (newAddressId) => {
   if (newAddressId >= 0) {
-    selectedAddress.value = profile.getAddresses.find(
+    selectedAddress.value = profile.addresses.find(
       (address) => address.id === newAddressId
     );
   } else {
@@ -269,30 +282,37 @@ watch(selectedAddressId, (newAddressId) => {
 });
 
 function makeOrder() {
-  const newOrder = {
-    ...cart,
-    id: Math.floor(10000000 + Math.random() * 90000000),
-    phone: orderPhone.value,
-  };
-
-  if (selectedAddressId.value >= 0) {
-    newOrder["address"] = profile.getAddresses.find(
-      (address) => address.id === selectedAddressId.value
-    );
+  if (!authStore.isAuthenticated) {
+    router.push("/login?redirect=/cart");
+  } else {
+    const newOrder = {
+      userId: authStore.user.id,
+      phone: orderPhone.value,
+      misc: cart.miscs.filter((item)=>item.count>0).map(item => ({ miscId: item.id, quantity: item.count })),
+      pizzas: cart.pizzas.map(item => ({ ingredients: Object.entries(item.ingredients).map(([name, { id, count }]) => ({ ingredientId: id, quantity: count })), quantity: item.count, name: item.name, sauceId: item.sauce.id, sizeId: item.size.id, doughId: item.dough.id })),
+      address: {
+          building: " ",
+          flat: " ",
+          street: " ",
+          comment: " ",
+      }
+    };
+    console.log(newOrder)
+    if (selectedAddressId.value >= 0) {
+      newOrder["address"] = profile.addresses.find(
+        (address) => address.id === selectedAddressId.value
+      );
+    }
+    if (selectedAddressId.value === "-2") {
+      newOrder["address"]["building"] = newAddress.value.building;
+      newOrder["address"]["flat"] = newAddress.value.flat;
+      newOrder["address"]["street"] = newAddress.value.street;
+      newOrder["address"]["comment"] = "";
+    }
+    profile.makeOrder(newOrder);
+    cart.reset();
+    router.push("/success");
   }
-  if (selectedAddressId.value === "-2") {
-    newOrder["address"]["building"] = newAddress.value.building;
-    newOrder["address"]["flat"] = newAddress.value.flat;
-    newOrder["address"]["street"] = newAddress.value.street;
-    newOrder["address"]["comment"] = "";
-  }
-
-  if (selectedAddressId.value === "-1") {
-    delete newOrder["address"];
-  }
-  profile.makeOrder(newOrder);
-  cart.reset();
-  router.push("/profile/orders");
 }
 
 function changePizza(pizza_change) {

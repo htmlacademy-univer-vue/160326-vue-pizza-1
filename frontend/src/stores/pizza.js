@@ -50,6 +50,23 @@ export const usePizzaStore = defineStore("pizza", {
         this.ingredients[ingredient.latinName] = ingredient_val;
       }
     },
+    ingredientsStringForPizza: (ingredients) => {
+      const data = useDataStore()
+      if (ingredients !== []){
+        return ingredients
+        .filter((ingredient) => ingredient.quantity > 0)
+        .map(
+          (ingredient) =>
+            `${
+              data.ingredients.find(
+                (item) => item.id === ingredient.ingredientId
+              ).name
+            } X ${ingredient.quantity}`
+        )
+        .join(", ");
+      } else {return ''}
+
+    },
     decrementIngredient(ingredient) {
       this.ingredients[ingredient.latinName].count--;
     },
@@ -67,6 +84,15 @@ export const usePizzaStore = defineStore("pizza", {
     changeDough(dough) {
       this.dough = dough;
     },
+    pricePizzaSome(pizza){
+      const data = useDataStore()
+      return pizzaPrice({
+        size: data.sizes.find((item) => item.id === pizza.sizeId),
+        sauce: data.sauces.find((item) => item.id === pizza.sauceId),
+        dough: data.doughs.find((item) => item.id === pizza.doughId),
+        ingredients: pizza.ingredients ? pizza.ingredients.map((item) => ({count: item.quantity, price: data.ingredients.find((ingr)=>ingr.id === item.ingredientId).price})) : []
+      });
+    },
     copyPizzaForEdit(pizza) {
       this.size = pizza.size;
       this.dough = pizza.dough;
@@ -82,14 +108,9 @@ export const usePizzaStore = defineStore("pizza", {
       this.sauce = useDataStore().sauces[0];
       this.dough = useDataStore().doughs[0];
       this.size = useDataStore().sizes[0];
-      this.ingredients = useDataStore().ingredients.reduce(
-        (acc, ingredient) => {
-          ingredient["count"] = 0;
-          acc[ingredient.latinName] = ingredient;
-          return acc;
-        },
-        {}
-      );
+      this.ingredients = {
+
+      };
     },
   },
 });

@@ -4,7 +4,6 @@ import ingredientsJson from "@/mocks/ingredients.json";
 import saucesJson from "@/mocks/sauces.json";
 import sizesJson from "@/mocks/sizes.json";
 import miscJson from "@/mocks/misc.json";
-import addresseseJson from "@/mocks/addresses.json";
 
 import {
   doughNormalize,
@@ -12,43 +11,62 @@ import {
   ingredientNormalize,
   sauceNormalize,
 } from "@/common/helpers";
-import { useProfileStore } from "@/stores/profile";
+import resources from "@/services/resources";
 
 export const useDataStore = defineStore("data", {
   state: () => ({
-    doughs: daughJson.map(doughNormalize),
-    ingredients: ingredientsJson.map(ingredientNormalize),
-    sauces: saucesJson.map(sauceNormalize),
-    sizes: sizesJson.map(sizeNormalize),
-    misc: miscJson,
-    addresses: addresseseJson,
+    doughs: [],
+    ingredients: [],
+    sauces: [],
+    sizes: [],
+    misc: [],
   }),
   getters: {},
   actions: {
-    addAddress(address) {
-      const sortedAddresses = this.addresses.sort((a, b) => a.id - b.id);
-      const lastId = sortedAddresses[sortedAddresses.length - 1].id;
-      const user = useProfileStore();
-      const addressToAdd = {
-        id: lastId + 1,
-        name: address.name,
-        street: address.street,
-        building: address.building,
-        flat: address.flat,
-        comment: address.comment,
-        userId: user.id,
-      };
-
-      this.addresses.push(addressToAdd);
+    async fetchDoughs() {
+      try {
+        const doughs = await resources.dough.getDough();
+        this.doughs = doughs.data.map(doughNormalize);
+      } catch (error) {
+        this.doughs = []
+        console.error("Error fetching doughs:", error);
+      }
     },
-    editAddress(address) {
-      const index = this.addresses.findIndex((a) => a.id === address.id);
-      this.addresses[index] = { ...address };
+    async fetchSizes() {
+      try {
+        const sizes = await resources.size.getSize();
+        this.sizes = sizes.data.map(sizeNormalize);
+      } catch (error) {
+        this.sizes = []
+        console.error("Error fetching sizes:", error);
+      }
     },
-    deleteAddress(address) {
-      this.addresses = this.addresses.filter(
-        (address_this) => address_this.id !== address.id
-      );
+    async fetchSauces() {
+      try {
+        const sauces = await resources.sauce.getSauce();
+        this.sauces = sauces.data.map(sauceNormalize);
+      } catch (error) {
+        this.sauces = []
+        console.error("Error fetching sauces:", error);
+      }
+    },
+    async fetchMiscs() {
+      try {
+        const miscs = await resources.misc.getMisc();
+        this.misc = miscs.data
+      } catch (error) {
+        this.misc = []
+        console.error("Error fetching miscs:", error);
+      }
+    },
+    async fetchIngredients() {
+      try {
+        const ingredients = await resources.ingredients.getIngredients();
+        this.ingredients = ingredients.data.map(ingredientNormalize)
+      } catch (error) {
+        this.ingredients = []
+        console.error("Error fetching ingredients:", error);
+      }
     },
   },
 });

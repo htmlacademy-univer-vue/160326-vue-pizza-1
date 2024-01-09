@@ -1,3 +1,5 @@
+import { isLoggedIn } from "@/middlewares/isLoggedIn";
+
 export default [
   {
     path: "/",
@@ -12,6 +14,12 @@ export default [
     meta: { layout: "DefaultLayout" },
   },
   {
+    path: "/success",
+    name: "SuccessView",
+    component: () => import("../views/SuccessView.vue"),
+    meta: { layout: "SimpleLayout" },
+  },
+  {
     path: "/login",
     name: "LoginView",
     component: () => import("../views/LoginView.vue"),
@@ -21,7 +29,7 @@ export default [
     path: "/profile",
     name: "ProfileView",
     component: () => import("../views/ProfileView.vue"),
-    meta: { layout: "DefaultLayout" },
+    meta: { layout: "DefaultLayout", middlewares: [isLoggedIn] },
     children: [
       {
         path: "info",

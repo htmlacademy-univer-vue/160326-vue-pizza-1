@@ -3,14 +3,18 @@
     <h1 class="title title--big">История заказов</h1>
   </div>
 
-  <section v-for="(order, index) in profile.orders" :key="index" class="sheet order">
+  <section
+    v-for="(order, index) in profile.orders"
+    :key="index"
+    class="sheet order"
+  >
     <div class="order__wrapper">
       <div class="order__number">
         <b>Заказ #{{ order.id }}</b>
       </div>
 
       <div class="order__sum">
-        <span>Сумма заказа: {{ order.getFullPrice }} ₽</span>
+        <span>Сумма заказа: {{ profile.getOrderPrice(order) }} ₽</span>
       </div>
 
       <div class="order__button">
@@ -29,10 +33,14 @@
       </div>
     </div>
     <ul class="order__list">
-      <li v-for="(pizza, index) in order.pizzas" :key="index" class="order__item">
+      <li
+        v-for="(pizza, index) in order.orderPizzas"
+        :key="index"
+        class="order__item"
+      >
         <div class="product">
           <img
-            src="@/assets/img/product.svg"
+            src="http://127.0.0.1:3000/public/img/product.svg"
             class="product__img"
             width="56"
             height="56"
@@ -42,47 +50,66 @@
             <h2>{{ pizza.name }}</h2>
             <ul>
               <li>
-                {{ pizza.getSize.name }}, на
-                {{ pizza.getDough.name.toLowerCase().slice(0, -1) }}м тесте
+                {{
+                  dataStore.sizes.find((item) => item.id === pizza.sizeId).name
+                }}, на
+                {{
+                  dataStore.doughs
+                    .find((item) => item.id === pizza.doughId)
+                    .name.toLowerCase()
+                    .slice(0, -1)
+                }}м тесте
               </li>
-              <li>Соус: {{ pizza.getSauce.name }}</li>
-              <li v-if="pizza.ingredientsString.length > 0">
-                Начинка: {{ pizza.ingredientsString }}
+              <li>
+                Соус:
+                {{
+                  dataStore.sauces.find((item) => item.id === pizza.sauceId)
+                    .name
+                }}
               </li>
+                            <li v-if="pizza.ingredients !== undefined && pizzaStore.ingredientsStringForPizza(pizza.ingredients).length > 0">
+                              Начинка: {{ pizzaStore.ingredientsStringForPizza(pizza.ingredients) }}
+                            </li>
             </ul>
           </div>
         </div>
         <p class="order__price">
-          <span v-if="pizza.count > 1">{{ pizza.count }} X </span
-          >{{ pizza.pricePizza }} ₽
+                    <span v-if="pizza.quantity > 1">{{ pizza.quantity }} X </span
+                    >{{ pizzaStore.pricePizzaSome(pizza) }} ₽
         </p>
       </li>
     </ul>
-
-    <ul class="order__additional">
-      <li v-for="(misc, index) in order.miscs.filter((misc) => misc.count > 0)" :key="index">
-        <img
-          :src="`/src/assets/img/${misc.image}.svg`"
-          width="20"
-          height="30"
-          :alt="misc.name"
-        />
+    <ul v-if="order.orderMisc !== undefined" class="order__additional">
+      <li v-for="(misc, index) in order.orderMisc" :key="index">
+                <img
+                  :src="`http://127.0.0.1:3000${
+                    dataStore.misc.find((item) => item.id === misc.miscId).image
+                  }`"
+                  width="20"
+                  height="30"
+                  :alt="dataStore.misc.find((item)=>item.id===misc.miscId).name"
+                />
         <p>
-          <span>{{ misc.name }}</span>
-          <b
-            ><span v-if="misc.count > 1">{{ misc.count }} X </span
-            >{{ misc.price }} ₽</b
-          >
+                    <span>{{ dataStore.misc.find((item)=>item.id===misc.miscId).name }}</span>
+                    <b
+                      ><span v-if="misc.quantity > 1">{{ misc.quantity }} X </span
+                      >{{ dataStore.misc.find((item)=>item.id===misc.miscId).price }} ₽</b
+                    >
         </p>
       </li>
     </ul>
-    <p v-if="order.address" class="order__address">
+    <p
+      v-if="profile.getOrderAdress(order).street !== ' '"
+      class="order__address"
+    >
       Адрес доставки:
-      <span v-if="order.address.name">{{ order.address.name }}</span>
+      <span v-if="profile.getOrderAdress(order).name">{{
+        profile.getOrderAdress(order).name
+      }}</span>
       <span v-else
-        >Улица {{ order.address.street }}, д.{{ order.address.building }}, кв.{{
-          order.address.flat
-        }}</span
+        >Улица {{ profile.getOrderAdress(order).street }}, д.{{
+          profile.getOrderAdress(order).building
+        }}, кв.{{ profile.getOrderAdress(order).flat }}</span
       >
     </p>
     <p v-else class="order__address">Самовывоз</p>
@@ -93,12 +120,16 @@
 import { useProfileStore } from "@/stores/profile";
 import { useCartStore } from "@/stores/cart";
 import router from "@/router";
+import { usePizzaStore } from "@/stores/pizza";
+import { useDataStore } from "@/stores/data";
 
 const profile = useProfileStore();
+const pizzaStore = usePizzaStore();
+const dataStore = useDataStore();
 const cart = useCartStore();
 
 const copyOrder = (order) => {
-  cart.copyCart(order)
+  cart.copyCart(order);
   router.push("/cart");
 };
 </script>

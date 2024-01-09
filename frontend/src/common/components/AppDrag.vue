@@ -1,3 +1,14 @@
+<template>
+  <div
+    :draggable="true"
+    @dragstart.self="onDrag"
+    @dragover.prevent
+    @dragenter.prevent
+  >
+    <slot />
+  </div>
+</template>
+
 <script setup>
 import { DATA_TRANSFER_PAYLOAD, MOVE } from "../constants";
 
@@ -15,17 +26,5 @@ function onDrag({ dataTransfer }) {
     DATA_TRANSFER_PAYLOAD,
     JSON.stringify(props.transferData)
   );
-  JSON.stringify(props.transferData);
 }
 </script>
-
-<template>
-  <div
-    :draggable="true"
-    @dragstart.self="onDrag"
-    @dragover.prevent
-    @dragenter.prevent
-  >
-    <slot />
-  </div>
-</template>

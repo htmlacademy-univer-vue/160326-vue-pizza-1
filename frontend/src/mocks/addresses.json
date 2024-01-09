@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Дом1",
+    "street": "Улица1",
+    "building": "1",
+    "flat": "1",
+    "comment": "Код домофона 1",
+    "userId": 1
+  },
+  {
+    "id": 2,
+    "name": "Дом2",
+    "street": "Улица2",
+    "building": "2",
+    "flat": "2",
+    "comment": "Код домофона 2",
+    "userId": 1
+  }
+]

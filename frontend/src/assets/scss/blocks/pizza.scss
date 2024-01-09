@@ -10,19 +10,19 @@
   background-position: center;
   background-size: 100%;
 
-  &--foundation--big-creamy {
+  &--foundation--large-creamy {
     background-image: url("@/assets/img/foundation/big-creamy.svg");
   }
 
-  &--foundation--big-tomato {
+  &--foundation--large-tomato {
     background-image: url("@/assets/img/foundation/big-tomato.svg");
   }
 
-  &--foundation--small-creamy {
+  &--foundation--light-creamy {
     background-image: url("@/assets/img/foundation/small-creamy.svg");
   }
 
-  &--foundation--small-tomato {
+  &--foundation--light-tomato {
     background-image: url("@/assets/img/foundation/small-tomato.svg");
   }
 }
@@ -118,7 +118,7 @@
   &--ham,
   &--ham.pizza__filling--second::before,
   &--ham.pizza__filling--third::after {
-    background-image: url("../img/filling-big/ham.svg");
+    background-image: url("@/assets/img/filling-big/ham.svg");
   }
 
   &--jalapeno,
@@ -175,3 +175,4 @@
     background-image: url("@/assets/img/filling-big/tomatoes.svg");
   }
 }
+

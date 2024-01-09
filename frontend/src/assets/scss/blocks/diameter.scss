@@ -59,7 +59,7 @@
   }
 
   input {
-    &:checked+span::before {
+    &:checked + span::before {
       box-shadow: $shadow-large;
     }
   }

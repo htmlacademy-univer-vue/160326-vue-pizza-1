@@ -1,32 +1,20 @@
-import doughSizes from "./data/doughSizes"
-import ingredients from "./data/ingredients"
-import sizes from "./data/sizes"
-import sauces from "./data/sauces"
+import doughSizes from "./data/doughSizes";
+import sauces from "./data/sauces";
+import ingredients from "./data/ingredients";
+import sizes from "./data/sizes";
 
-export const normalizeDough = (dough) => {
-    return {
-        ...dough,
-        value: doughSizes[dough.id]
-    }
-}
+export const doughName = dough => {
+  return doughSizes[dough.id];
+};
 
-export const normalizeSizes = (size) => {
-    return {
-        ...size,
-        value: sizes[size.id]
-    }
-}
+export const sizeName = size => {
+  return sizes[size.id];
+};
 
-export const normalizeIngredients = (ingredient) => {
-    return {
-        ...ingredient,
-        value: ingredients[ingredient.id]
-    }
-}
+export const ingredientName = ingredient => {
+  return ingredients[ingredient.id];
+};
 
-export const normalizeSauces = (sauce) => {
-    return {
-        ...sauce,
-        value: sauces[sauce.id]
-    }
-}
+export const sauceName = sauce => {
+  return sauces[sauce.id];
+};

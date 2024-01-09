@@ -1,154 +1,95 @@
-<script setup>
-import {
-  normalizeDough,
-  normalizeIngredients,
-  normalizeSizes,
-  normalizeSauces,
-} from "../common/helpers";
-
-import doughJSON from "../mocks/dough.json";
-import ingredientsJSON from "../mocks/ingredients.json";
-import sizesJSON from "../mocks/sizes.json";
-import saucesJSON from "../mocks/sauces.json";
-
-const doughTypes = doughJSON.map(normalizeDough);
-const ingredientsTypes = ingredientsJSON.map(normalizeIngredients);
-const saucesTypes = saucesJSON.map(normalizeSauces);
-const sizesTypes = sizesJSON.map(normalizeSizes);
-</script>
-
 <template>
   <main class="content">
     <form action="#" method="post">
-      <div class="content__wrapper">
-        <h1 class="title title--big">Конструктор пиццы</h1>
-
+      <BigBlock>
+        <template #title>Конструктор пиццы</template>
         <div class="content__dough">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите тесто</h2>
-
-            <div class="sheet__content dough">
-              <label
-                v-for="doughType in doughTypes"
-                class="dough__input dough__input--light"
-                :class="`dough__input--${doughType.value}`"
-                :key="doughType.id"
-              >
-                <input
-                  type="radio"
-                  name="dought"
-                  :value="doughType.value"
-                  class="visually-hidden"
-                  checked
-                />
-
-                <b>{{ doughType.name }}</b>
-                <span>{{ doughType.description }}</span>
-              </label>
-            </div>
-          </div>
+          <SheetBlock :class-name="'dough'">
+            <template #title>Выберите тесто</template>
+            <label
+              v-for="(dough, index) in doughs"
+              :key="dough.id"
+              class="dough__input"
+              :class="'dough__input--' + doughName(dough)"
+            >
+              <input
+                type="radio"
+                name="dought"
+                :value="doughName(dough)"
+                class="visually-hidden"
+                :checked="index === 0"
+              />
+              <b>{{ dough.name }}</b>
+              <span>{{ dough.description }}</span>
+            </label>
+          </SheetBlock>
         </div>
-
         <div class="content__diameter">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите размер</h2>
-
-            <div class="sheet__content diameter">
+          <SheetBlock :class-name="'diameter'">
+            <template #title>Выберите размер</template>
+            <label
+              v-for="(size, index) in sizes"
+              :key="size.id"
+              class="diameter__input"
+              :class="'diameter__input--' + sizeName(size)"
+            >
+              <input
+                type="radio"
+                name="diameter"
+                :value="sizeName(size)"
+                class="visually-hidden"
+                :checked="index === 1"
+              />
+              <span>{{ size.name }}</span>
+            </label>
+          </SheetBlock>
+        </div>
+        <div class="content__ingredients">
+          <SheetBlock :class-name="'ingredients'">
+            <template #title>Выберите ингредиенты</template>
+            <div class="ingredients__sauce">
+              <p>Основной соус:</p>
               <label
-                class="diameter__input"
-                :class="`diameter__input--${sizeType.value}`"
-                v-for="sizeType in sizesTypes"
-                :key="sizeType.id"
+                v-for="(sauce, index) in sauces"
+                :key="sauce.id"
+                class="radio ingredients__input"
               >
                 <input
                   type="radio"
-                  name="diameter"
-                  :value="sizeType.value"
-                  class="visually-hidden"
+                  name="sauce"
+                  :value="sauceName(sauce)"
+                  :checked="index === 0"
                 />
-                <span>{{ sizeType.name }}</span>
+                <span>{{ sauce.name }}</span>
               </label>
             </div>
-          </div>
-        </div>
+            <div class="ingredients__filling">
+              <p>Начинка:</p>
 
-        <div class="content__ingredients">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">
-              Выберите ингредиенты
-            </h2>
-
-            <div class="sheet__content ingredients">
-              <div class="ingredients__sauce">
-                <p>Основной соус:</p>
-
-                <label
-                  class="radio ingredients__input"
-                  v-for="sauceType in saucesTypes"
+              <ul class="ingredients__list">
+                <li
+                  v-for="ingredient in ingredients"
+                  :key="ingredient.id"
+                  class="ingredients__item"
                 >
-                  <input
-                    type="radio"
-                    name="sauce"
-                    :value="sauceType.value"
-                    checked
-                  />
-                  <span>{{ sauceType.name }}</span>
-                </label>
-              </div>
-
-              <div class="ingredients__filling">
-                <p>Начинка:</p>
-
-                <ul class="ingredients__list">
-                  <li
-                    class="ingredients__item"
-                    v-for="ingredientType in ingredientsTypes"
-                    :key="ingredientType.id"
+                  <span
+                    class="filling"
+                    :class="'filling--' + ingredientName(ingredient)"
+                    >{{ ingredient.name }}</span
                   >
-                    <span
-                      class="filling"
-                      :class="`filling--${ingredientType.value}`"
-                    >
-                      {{ ingredientType.name }}
-                    </span>
-
-                    <div class="counter counter--orange ingredients__counter">
-                      <button
-                        type="button"
-                        class="counter__button counter__button--minus"
-                        disabled
-                      >
-                        <span class="visually-hidden">Меньше</span>
-                      </button>
-                      <input
-                        type="text"
-                        name="counter"
-                        class="counter__input"
-                        value="0"
-                      />
-                      <button
-                        type="button"
-                        class="counter__button counter__button--plus"
-                      >
-                        <span class="visually-hidden">Больше</span>
-                      </button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+                  <SimpleCounter />
+                </li>
+              </ul>
             </div>
-          </div>
+          </SheetBlock>
         </div>
-
         <div class="content__pizza">
-          <label class="input">
-            <span class="visually-hidden">Название пиццы</span>
-            <input
-              type="text"
-              name="pizza_name"
-              placeholder="Введите название пиццы"
-            />
-          </label>
+          <SimpleInput
+            :hidden-span="String('Название пиццы')"
+            :input-name="String('pizza_name')"
+            :type="String('text')"
+            :placeholder="String('Введите название пиццы')"
+          />
 
           <div class="content__constructor">
             <div class="pizza pizza--foundation--big-tomato">
@@ -162,10 +103,29 @@ const sizesTypes = sizesJSON.map(normalizeSizes);
 
           <div class="content__result">
             <p>Итого: 0 ₽</p>
-            <button type="button" class="button" disabled>Готовьте!</button>
+            <GreenButton disabled> Готовьте! </GreenButton>
           </div>
         </div>
-      </div>
+      </BigBlock>
     </form>
   </main>
 </template>
+
+<script setup>
+import doughs from "../mocks/dough.json";
+import sizes from "../mocks/sizes.json";
+import ingredients from "../mocks/ingredients.json";
+import sauces from "../mocks/sauces.json";
+
+import {
+  doughName,
+  sizeName,
+  ingredientName,
+  sauceName,
+} from "@/common/helpers";
+import BigBlock from "@/common/components/BigBlock.vue";
+import SheetBlock from "@/common/components/SheetBlock.vue";
+import GreenButton from "@/common/components/GreenButton.vue";
+import SimpleInput from "@/common/components/SimpleInput.vue";
+import SimpleCounter from "@/common/components/SimpleCounter.vue";
+</script>

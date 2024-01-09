@@ -10,14 +10,14 @@
       name="diameter"
       :value="size.latinName"
       class="visually-hidden"
-      :checked="index === 0"
-      @input="changeSize(size)"
+      :checked="props.modelValue.getSize === size"
+      @input="props.modelValue.changeSize(size)"
     />
     <span>{{ size.name }}</span>
   </label>
 </template>
 <script setup>
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Object,
     default: () => {},
@@ -28,10 +28,10 @@ defineProps({
     default: () => [],
   },
 });
-
-const emit = defineEmits(["changeSize"]);
-
-const changeSize = (size) => {
-  emit("changeSize", size);
-};
 </script>
+
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds.scss";
+@import "@/assets/scss/mixins/m_center.scss";
+@import "@/assets/scss/blocks/diameter.scss";
+</style>

@@ -1,10 +1,31 @@
 <template>
-    <div class="app_layout">
-        <app-header/>
-        <slot/>
-    </div>
+  <component :is="layout">
+    <slot />
+  </component>
 </template>
 
 <script setup>
-    import AppHeader from "./AppHeader.vue";
+import { useRoute } from "vue-router";
+import { watch, shallowRef } from "vue";
+import DefaultLayout from "@/layouts/DefaultLayout.vue";
+
+const route = useRoute();
+const layout = shallowRef(null);
+
+watch(
+  () => route.meta,
+  async (meta) => {
+    try {
+      if (meta.layout) {
+        const component = await import(`./${meta.layout}.vue`);
+        layout.value = component?.default || DefaultLayout;
+      } else {
+        layout.value = DefaultLayout;
+      }
+    } catch (e) {
+      console.error("Layout not found", e);
+      layout.value = DefaultLayout;
+    }
+  }
+);
 </script>

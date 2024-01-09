@@ -12,7 +12,7 @@
             :key="index"
             class="pizza__filling"
             :class="[
-              `pizza__filling--${ingredient.name}`,
+              `pizza__filling--${ingredient.latinName}`,
               ingredient.count === 2
                 ? 'pizza__filling--second'
                 : ingredient.count === 3
@@ -39,9 +39,16 @@ const props = defineProps({
 
 const filteredIngredients = computed(() => {
   const ingredients = props.modelValue.ingredients;
-
-  return Object.entries(ingredients)
-    .map(([name, count]) => ({ name, count }))
-    .filter((ingredient) => ingredient.count > 0);
+  return Object.values(ingredients).filter(
+    (ingredient) => ingredient.count > 0
+  );
 });
 </script>
+
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds.scss";
+@import "@/assets/scss/mixins/m_center.scss";
+@import "@/assets/scss/mixins/m_clear-list.scss";
+@import "@/assets/scss/blocks/pizza.scss";
+@import "@/assets/scss/layout/content-home.scss";
+</style>

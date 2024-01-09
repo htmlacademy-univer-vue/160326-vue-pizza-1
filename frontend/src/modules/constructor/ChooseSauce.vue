@@ -8,14 +8,14 @@
       type="radio"
       name="sauce"
       :value="sauce.latinName"
-      :checked="index === 0"
-      @input="changeSauce(sauce)"
+      :checked="props.modelValue.getSauce === sauce"
+      @input="props.modelValue.changeSauce(sauce)"
     />
     <span>{{ sauce.name }}</span>
   </label>
 </template>
 <script setup>
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Object,
     default: () => {},
@@ -26,10 +26,13 @@ defineProps({
     default: () => [],
   },
 });
-
-const emit = defineEmits(["changeSauce"]);
-
-const changeSauce = (sauce) => {
-  emit("changeSauce", sauce);
-};
 </script>
+
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds.scss";
+@import "@/assets/scss/mixins/m_center.scss";
+@import "@/assets/scss/mixins/m_clear-list.scss";
+@import "@/assets/scss/blocks/ingredients.scss";
+@import "@/assets/scss/blocks/filling.scss";
+@import "@/assets/scss/blocks/radio.scss";
+</style>

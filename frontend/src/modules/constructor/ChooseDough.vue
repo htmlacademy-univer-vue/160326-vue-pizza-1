@@ -10,15 +10,15 @@
       name="dought"
       :value="dough.latinName"
       class="visually-hidden"
-      :checked="index === 0"
-      @input="changeDough(dough)"
+      :checked="props.modelValue.getDough === dough"
+      @input="props.modelValue.changeDough(dough)"
     />
     <b>{{ dough.name }}</b>
     <span>{{ dough.description }}</span>
   </label>
 </template>
 <script setup>
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Object,
     default: () => {},
@@ -29,9 +29,10 @@ defineProps({
     default: () => [],
   },
 });
-const emit = defineEmits(["changeDough"]);
-
-const changeDough = (dough) => {
-  emit("changeDough", dough);
-};
 </script>
+
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds.scss";
+@import "@/assets/scss/mixins/m_center.scss";
+@import "@/assets/scss/blocks/dough.scss";
+</style>

@@ -1,3 +1,9 @@
+<template>
+  <div @drop.stop="onDrop" @dragover.prevent @dragenter.prevent>
+    <slot />
+  </div>
+</template>
+
 <script setup>
 import { DATA_TRANSFER_PAYLOAD } from "../constants";
 
@@ -16,9 +22,3 @@ function onDrop({ dataTransfer }) {
   }
 }
 </script>
-
-<template>
-  <div @drop.stop="onDrop" @dragover.prevent @dragenter.prevent>
-    <slot />
-  </div>
-</template>

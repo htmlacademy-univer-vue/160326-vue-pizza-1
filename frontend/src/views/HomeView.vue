@@ -84,12 +84,7 @@
           </SheetBlock>
         </div>
         <div class="content__pizza">
-          <SimpleInput
-            :hidden-span="String('Название пиццы')"
-            :input-name="String('pizza_name')"
-            :type="String('text')"
-            :placeholder="String('Введите название пиццы')"
-          />
+          <SimpleInput :hidden-span="String('Название пиццы')" :input-name="String('pizza_name')" :type="String('text')" :placeholder="String('Введите название пиццы')"/>
 
           <div class="content__constructor">
             <div class="pizza pizza--foundation--big-tomato">
@@ -103,7 +98,9 @@
 
           <div class="content__result">
             <p>Итого: 0 ₽</p>
-            <GreenButton disabled> Готовьте! </GreenButton>
+            <GreenButton disabled>
+                Готовьте!
+            </GreenButton>
           </div>
         </div>
       </BigBlock>
